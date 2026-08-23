@@ -13,13 +13,16 @@ function ProjectList({projects}: ProjectListProps) {
     const handleEdit = (project: Project) => {
         setProjectBeingEdited(project);
     }
+    const handleCancel = () => {
+        setProjectBeingEdited({} as Project);
+    }
     return (
         <ul className = "row">
             {projects.map((project) => (
                 <li key = {project.id}>
                     {
                     project == projectBeingEdited ? (
-                        <ProjectForm />
+                        <ProjectForm onCancel={handleCancel} />
                     ) : (
                         <ProjectCard project={project} onEdit={handleEdit} />
                     )
