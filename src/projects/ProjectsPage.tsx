@@ -37,9 +37,19 @@ function ProjectsPage(){
 
 
     const saveForm = (project: Project) => {
-        let updatedProjects = projects.map((p) => p.id === project.id ? project : p);
-        setProjects(updatedProjects);
+        projectAPI
+        .put(project)
+        .then((new_project) => {
+            let updatedProjects = projects.map((p) => p.id === new_project.id ? new_project : p);
+            setProjects(updatedProjects);            
+        })
+        .catch((e) =>{
+            if (e instanceof Error){
+                setError(e.message);
+            }
+        })
     }
+    
     return(
     <>
         <h1> Projects </h1>
