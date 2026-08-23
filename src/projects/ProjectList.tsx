@@ -1,5 +1,6 @@
 import { Project } from "./Project";
 import ProjectCard from "./ProjectCard";
+import ProjectForm from "./ProjectForm";
 
 
 interface ProjectListProps {
@@ -10,9 +11,10 @@ function ProjectList({projects}: ProjectListProps) {
     return (
         <ul className = "row">
             {projects.map((project) => (
-                <div key = {project.id}>
+                <li key = {project.id}>
                     <ProjectCard project={project} />
-                </div>
+                    <ProjectForm />
+                </li>
             ))}
         </ul> 
     );
