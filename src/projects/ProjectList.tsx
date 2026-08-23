@@ -1,4 +1,5 @@
 import { Project } from "./Project";
+import ProjectCard from "./ProjectCard";
 
 
 interface ProjectListProps {
@@ -9,18 +10,9 @@ function ProjectList({projects}: ProjectListProps) {
     return (
         <ul className = "row">
             {projects.map((project) => (
-                <li key = {project.id} className = "cols-sm"> 
-                    <div className = "card">
-                        <img src={project.imageUrl} alt={project.name} className = "card-img-top" />
-                        <section className = "card-body">
-                            <h5 className = "card-title">
-                                <strong>{project.name}</strong>
-                            </h5>
-                            <p className = "card-text">{project.description}</p>
-                            <p>{project.budget.toLocaleString()}</p>
-                        </section>
-                    </div>
-                </li>
+                <div key = {project.id}>
+                    <ProjectCard project={project} />
+                </div>
             ))}
         </ul> 
     );
