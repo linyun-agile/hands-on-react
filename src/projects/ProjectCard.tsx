@@ -5,6 +5,9 @@ interface ProjectCardProps {
     project: Project;
 }
 function ProjectCard({project}: ProjectCardProps) {
+    function handle_editClick(projectBeingEdited: Project) {
+        console.log(`Edit project ${projectBeingEdited.name}`);
+    }
     return (
         <li className = "col-sm">
             <div className = "card">
@@ -15,6 +18,10 @@ function ProjectCard({project}: ProjectCardProps) {
                     </h5>
                     <p className = "card-text">{project.description}</p>
                     <p>{project.budget.toLocaleString()}</p>
+                    <button onClick={() => handle_editClick(project)} className = "btn border-primary">
+                        <span className="icon-edit"></span>
+                        Edit
+                    </button>
                 </section>
             </div>
         </li>
