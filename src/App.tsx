@@ -1,12 +1,31 @@
 import ProjectsPage from "./projects/ProjectsPage";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router";
+import HomePage from "./home/HomePage";
 
 function App() {
   return (
-    <div className="Container">
-      <ProjectsPage />
-      
-    </div>
-  )
+    
+    <BrowserRouter>
+    <header>
+        <div className="logo">
+
+        </div>
+        <NavLink to="/" className="button rounded" >
+          <span className="icon-home"></span>
+          Home
+        </NavLink>
+        <NavLink to="/projects" className="button rounded" >
+          Projects
+        </NavLink>
+    </header>
+      <div className="container">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+          </Routes>
+      </div>
+    </BrowserRouter>
+  );
 }
 
 export default App;
