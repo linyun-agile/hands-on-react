@@ -78,7 +78,14 @@ const projectAPI = {
       console.log('log client error ' + error);
       throw new Error('There was an error updating the project. Please try again.')
     })
-  }
+  },
+
+  find(id: Number){
+    return fetch(`${url}/${id}`)
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(convertToProjectModel)
+  },
 };
 
 export { projectAPI };

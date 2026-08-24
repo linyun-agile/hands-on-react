@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import {Project} from "./Project";
 
 
@@ -14,11 +15,13 @@ function ProjectCard({project, onEdit}: ProjectCardProps) {
         <div className = "card">
             <img src={project.imageUrl} alt={project.name} className = "card-img-top" />
             <section className = "card-body">
+                <Link to={"/projects/" + project.id}>
                 <h5 className = "card-title">
                     <strong>{project.name}</strong>
                 </h5>
+                </Link>
                 <p className = "card-text">{project.description}</p>
-                <p>{project.budget.toLocaleString()}</p>
+                <p>{project.budget.toLocaleString()}</p>        
                 <button onClick={() => handle_editClick(project)} className = "btn border-primary">
                     <span className="icon-edit"></span>
                     Edit
