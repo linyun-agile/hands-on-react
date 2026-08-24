@@ -6,25 +6,25 @@ import { useState } from "react";
 
 interface ProjectListProps {
   projects: Project[];
-  onSave: (project: Project) => void;
 }
 
-function ProjectList({projects, onSave}: ProjectListProps) {
+function ProjectList({projects}: ProjectListProps) {
     const [projectBeingEdited, setProjectBeingEdited] = useState<Project | null>(null);
     const handleEdit = (project: Project) => {
         setProjectBeingEdited(project);
     }
     const handleCancel = () => {
-        setProjectBeingEdited({} as Project);
+        setProjectBeingEdited(null);
     }
 
     return (
-        <ul className = "row">
+        <ul className="row">
             {projects.map((project) => (
-                <li key = {project.id}>
+                <li key={project.id}>
                     {
-                    project == projectBeingEdited ? (
-                        <ProjectForm onCancel={handleCancel} onSave={onSave} project={project} />
+                    project === projectBeingEdited ? (
+
+                        <ProjectForm onCancel={handleCancel} project={project} />
                     ) : (
                         <ProjectCard project={project} onEdit={handleEdit} />
                     )

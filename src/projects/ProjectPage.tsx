@@ -1,56 +1,33 @@
-import { Project } from "./Project"
-import ProjectDetail from "./ProjectDetail"
-import { useState, useEffect } from "react"
+import ProjectDetail from "./ProjectDetail";
 import { useParams } from "react-router";
-import { projectAPI } from "./projectAPI";
+import { useProject } from "./projectHooks";
 
-export default function ProjectPage(){
-    const [loading, setLoading] = useState(false);
-    const [project, setProject] = useState<Project | null>(null);
-    const [error, setError] = useState<string | undefined>(undefined);
+export default function ProjectPage() {
     const params = useParams();
     const id = Number(params.id);
-
-    useEffect(()=>{
-        if (id <= 0) {
-            setError("Invalid project id");
-            return;
-        }
-        setLoading(true);
-        projectAPI
-        .find(id)
-        .then((data) => {
-            setProject(data);
-            setLoading(false);
-        })
-        .catch((e) => {
-            setError(e.message);
-            setLoading(false);
-        });
-    }, [id]);
-
+    const { data: project, isPending, isError, error } = useProject(id);
 
     return (
         <div>
-            {error && (
+            {isError && (
                 <div className="row">
                     <div className="card large error">
                         <section>
                             <p>
                                 <span className="icon-alert inverse"></span>
-                                {error}
+                                {error instanceof Error ? error.message : "Error loading project"}
                             </p>
                         </section>
                     </div>
                 </div>
             )}
-            {loading && (
+            {isPending && (
                 <div className="center-page">
                     <span className="spinner primary"></span>
                     <p>Loading...</p>
                 </div>
             )}
-            { project && <ProjectDetail project={project}></ProjectDetail>}
+            {project && <ProjectDetail project={project} />}
         </div>
-    )
+    );
 }

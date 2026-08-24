@@ -1,60 +1,38 @@
-import { useEffect, useState } from "react";
-import { Project } from "./Project";
-import { projectAPI } from "./projectAPI";
+import { useState } from 'react';
+import { projectAPI } from './projectAPI';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from '@tanstack/react-query';
+import { Project } from './Project';
 
-export function useProjects(){
-    const[projects, setProjects] = useState<Project[]>([]);
-    const[saving, setSaving] = useState(false);
-    const[currentPage, setCurrentPage] = useState(1);
-    const[loading, setLoading] = useState(false);
-    const[error, setError] = useState();
-    const[savingError, setSavingError] = useState();
+export function useProjects() {
+  const [page, setPage] = useState(0);
+  const queryInfo = useQuery({
+    queryKey: ['projects', page],
+    queryFn: () => projectAPI.get(page + 1),
+    placeholderData: keepPreviousData,
+  });
+  return { ...queryInfo, page, setPage };
+}
 
+export function useProject(id: number) {
+  return useQuery({
+    queryKey: ['project', id],
+    queryFn: () => projectAPI.find(id),
+    enabled: Boolean(id && id > 0),
+  });
+}
 
-
-    useEffect(()=>{
-        setLoading(true);
-        projectAPI.get(currentPage)
-        .then((data)=>{
-            if(currentPage === 1){
-                setProjects(data)
-            }else{
-                setProjects((projects)=> [...projects, ...data])
-            }
-            setLoading(false);
-        })
-        .catch((e)=>{
-            setLoading(false);
-            setError(e.message);
-        })
-    },[currentPage]);
-
-    const saveProject = (project: Project)=>{
-        setSaving(true);
-        projectAPI.put(project)
-        .then((new_project) =>{
-            let updatedProjects = projects.map((p) =>{
-                if(p.id === new_project.id){
-                    return new_project;
-                }
-                return p;
-            })
-            setProjects(updatedProjects);
-        })
-        .catch((e)=>{
-            setSavingError(e.message);
-        })
-        .finally(()=>setSaving(false));
-    }
-
-    return {
-        projects,
-        currentPage,
-        setCurrentPage,
-        loading,
-        error,
-        saving,
-        savingError,
-        saveProject,
-    }
+export function useSaveProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (project: Project) => projectAPI.put(project),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['project'] });
+    },
+  });
 }
