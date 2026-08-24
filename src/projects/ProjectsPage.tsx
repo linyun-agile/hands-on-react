@@ -1,54 +1,13 @@
 import type { Project } from "./Project";
-import { projectAPI } from "./projectAPI";
 import ProjectList from "./ProjectList";
-import { useEffect, useState } from "react";
+import { useProjects } from "./projectHooks";
 
 
 
 function ProjectsPage(){
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | undefined>(undefined);
-    const [currentPage, setCurrentPage] = useState(1);
+    const {projects, currentPage, setCurrentPage, loading, error, saveProject, savingError} = useProjects();
 
     const handleMoreClick = ()=>setCurrentPage((currentPage) => currentPage + 1);
-    
-
-    useEffect(()=>{
-        setLoading(true);
-        projectAPI
-        .get(currentPage)
-        .then((data) => {
-            setError(undefined);
-            setLoading(false);
-            if(currentPage === 1){
-                setProjects(data);
-            }else{
-                setProjects((projects) => [...projects, ...data]);
-            }
-            
-        })
-        .catch(e => {
-            setLoading(false);
-            setError(e.message);
-        })
-    }, [currentPage]);
-
-
-
-    const saveForm = (project: Project) => {
-        projectAPI
-        .put(project)
-        .then((new_project) => {
-            let updatedProjects = projects.map((p) => p.id === new_project.id ? new_project : p);
-            setProjects(updatedProjects);            
-        })
-        .catch((e) =>{
-            if (e instanceof Error){
-                setError(e.message);
-            }
-        })
-    }
     
     return(
     <>
@@ -67,7 +26,7 @@ function ProjectsPage(){
                 </div>
             )
         }
-        <ProjectList projects={projects} onSave = {saveForm}/>
+        <ProjectList projects={projects} onSave = {saveProject}/>
         {
             ! error && !loading && (
                 <div className="row">
@@ -90,6 +49,18 @@ function ProjectsPage(){
                 </div>
             )
         }
+        {savingError &&(
+            <div className="row">
+                <div className="card">
+                    <div className="section">
+                        <p>
+                            <span className="icon-alert"></span>
+                            {savingError}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        )}
     </>
     )   
 };
